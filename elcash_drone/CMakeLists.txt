@@ -17,6 +17,7 @@ add_message_files(
  DroneStatus.msg
  DroneLandTakeoff.msg
  DroneCommand.msg
+ DronePackage.msg
 )
 
 

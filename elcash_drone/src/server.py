@@ -2,13 +2,17 @@
 import requests
 import rospy
 from elcash_drone.msg import DroneStatus, DroneLandTakeoff, DroneCommand
+from elcash_drone.msg import DronePackage
 
 ENDPOINT = "http://10.4.14.37:5000/api"
 SWARM_ID = "elcash"
 CHANNEL = 80
 RADIO = 0
 
-status_msg = DroneStatus()
+drone = ['drone_11','drone_12','drone_13']
+drone_id = ['E7E7E7E711','E7E7E7E712','E7E7E7E713']
+
+N = 1
 
 def getArena():
     url = ENDPOINT + "/arena"
@@ -52,6 +56,7 @@ def calibrate(drone_id):
 # Status functions
 
 def status(drone_id = None):
+    global status_msg
     if drone_id is None:
         url = ENDPOINT + "/" + SWARM_ID + "/status"
         params = {}
@@ -75,7 +80,7 @@ def status(drone_id = None):
         status_msg.yaw = data["yaw"]
         status_msg.status = data["status"]
         status_msg.battery_voltage = data["battery_voltage"]
-        # status_msg.battery_percentage = data["battery_percentage"]
+        status_msg.battery_percentage = data["battery_percentage:"]
 
         return True
     except ValueError:
@@ -128,11 +133,24 @@ def goto(cmd_msg):
 # Packaging
 
 def package():
-    url = ENDPOINT + "/" + SWARM_ID + "/package"
-    params = {}
-    r = requests.get(url=url, params=params)
-    data = r.text
-    print data
+    print "Trying to get package"
+    global need_to_assign,package_msg,package_pub
+    for i in range(len(need_to_assign)):
+        if need_to_assign[i]:
+            url = ENDPOINT + "/" + SWARM_ID + "/package"
+            params = {}
+            r = requests.get(url=url, params=params)
+            try:
+                #print r.text
+                data = r.json()
+                package_msg.id = data["id"]
+                package_msg.x = data["coordinates"][0]
+                package_msg.y = data["coordinates"][1]
+                package_msg.weight = data["weight"]
+                package_pub[i].publish(package_msg)
+            except ValueError:
+                return
+            need_to_assign[i] = False
 
 def deliver(drone_id, package_id):
     url = ENDPOINT + "/" + SWARM_ID + "/" + drone_id + "/deliver"
@@ -164,19 +182,42 @@ def shutdown():
     data = r.text
     print data
 
-if __name__ == '__main__':
-    rospy.init_node("server", anonymous=False)
+status_msg = DroneStatus()
+package_msg = DronePackage()
 
-    registerSwarm(0,1234)
-    connect("drone_11","E7E7E7E711")
-    calibrate("drone_11")
-    status_pub_11 = rospy.Publisher('/drone_11/status', DroneStatus, queue_size=1)
-    goto_sub_11 = rospy.Subscriber('/drone_11/goto', DroneCommand, goto)
-    land_sub_11 = rospy.Subscriber('/drone_11/land', DroneLandTakeoff, land)
-    takeoff_sub_11 = rospy.Subscriber('/drone_11/takeoff', DroneLandTakeoff, takeoff)
+need_to_assign = [True, False, False]
 
-    while not rospy.is_shutdown():
-        if status(drone_id='drone_11'):
-            status_pub_11.publish(status_msg)
+rospy.init_node("server", anonymous=False)
 
-    disconnect("drone_11")
+status_pub = []
+package_pub = []
+goto_sub = []
+land_sub = []
+takeoff_sub = []
+
+for i in range(N):
+    status_pub.append(rospy.Publisher('/'+drone[i]+'/status', DroneStatus, queue_size=1))
+    package_pub.append(rospy.Publisher('/'+drone[i]+'/assign', DronePackage, queue_size=1))
+
+    goto_sub.append(rospy.Subscriber('/'+drone[i]+'/goto', DroneCommand, goto))
+    land_sub.append(rospy.Subscriber('/'+drone[i]+'/land', DroneLandTakeoff, land))
+    takeoff_sub.append(rospy.Subscriber('/'+drone[i]+'/takeoff', DroneLandTakeoff, takeoff))
+
+rate = rospy.Rate(2)
+
+registerSwarm(0,1234)
+for i in range(N):
+    connect(drone[i],drone_id[i])
+    calibrate(drone[i])
+
+while not rospy.is_shutdown():
+    for i in range(N):
+        if status(drone_id=drone[i]):
+            status_pub[i].publish(status_msg)
+
+    if True in need_to_assign:
+        package()
+    rate.sleep()
+
+for i in range(N):
+    disconnect(drone[i])
