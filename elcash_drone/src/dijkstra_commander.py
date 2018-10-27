@@ -4,7 +4,7 @@ from elcash_drone.msg import DroneStatus, DroneLandTakeoff, DroneCommand
 from elcash_drone.msg import DronePackage
 import networkx as nx
 
-LAND_TIME = 5
+LAND_TIME = 3
 
 NODES = {
     "0": (2.2, 1.6),
@@ -96,7 +96,7 @@ def plan(origin_pos, goal_pos):
 package_list = []
 package_status = []
 
-THRESH = 0.1
+THRESH = 0.07
 
 curr = (0,0)
 home = (2.2,1.6) #TODO
@@ -144,7 +144,7 @@ package_sub = rospy.Subscriber('/'+drone_id+'/assign', DronePackage, assign_pack
 rate = rospy.Rate(30) # 10hz
 
 height = 0.6
-takeoff_velocity = 0.4
+takeoff_velocity = 0.3
 land_velocity = 0.7
 move_velocity = 0.35
 
