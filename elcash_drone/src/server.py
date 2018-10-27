@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 import requests
+import rospy
+from elcash_drone.msg import DroneStatus, DroneLandTakeoff, DroneCommand
 
 ENDPOINT = "http://10.4.14.37:5000/api"
-
 SWARM_ID = "elcash"
-
 CHANNEL = 80
-
 RADIO = 0
+
+status_msg = DroneStatus()
 
 def getArena():
     url = ENDPOINT + "/arena"
@@ -24,7 +25,7 @@ def registerSwarm(arena, seed):
     r = requests.get(url=url, params=params)
     data = r.text
     print data
-    
+
 # Drone setup functions
 
 def connect(drone_id, drone_address):
@@ -58,9 +59,28 @@ def status(drone_id = None):
         url = ENDPOINT + "/" + SWARM_ID + "/" + drone_id + "/status"
         params = {}
     r = requests.get(url=url, params=params)
-    data = r.text
-    print data
-    
+    try:
+        #print r.text
+        data = r.json()
+        if drone_id is None:
+            return False
+
+        status_msg.id = data["id"]
+        status_msg.var_x = data["var_x"]
+        status_msg.var_y = data["var_y"]
+        status_msg.var_z = data["var_z"]
+        status_msg.x = data["x"]
+        status_msg.y = data["y"]
+        status_msg.z = data["z"]
+        status_msg.yaw = data["yaw"]
+        status_msg.status = data["status"]
+        status_msg.battery_voltage = data["battery_voltage"]
+        # status_msg.battery_percentage = data["battery_percentage"]
+
+        return True
+    except ValueError:
+        return False
+
 # Drone control functions
 
 def stop(drone_id):
@@ -70,23 +90,37 @@ def stop(drone_id):
     data = r.text
     print data
 
-def takeoff(drone_id, z, v):
+def takeoff(takeoff_msg):
+    drone_id = takeoff_msg.drone_id
+    z = takeoff_msg.height
+    v = takeoff_msg.velocity
     url = ENDPOINT + "/" + SWARM_ID + "/" + drone_id + "/takeoff"
     params = {"z": z, "v": v}
     r = requests.get(url=url, params=params)
     data = r.text
     print data
-    
-def land(drone_id, z, v):
+
+def land(land_msg):
+    drone_id = land_msg.drone_id
+    z = land_msg.height
+    v = land_msg.velocity
     url = ENDPOINT + "/" + SWARM_ID + "/" + drone_id + "/land"
     params = {"z": z, "v": v}
     r = requests.get(url=url, params=params)
     data = r.text
     print data
 
-def goto(drone_id, x, y, z, yaw, v):
+def goto(cmd_msg):
+    drone_id = cmd_msg.drone_id
+    x = cmd_msg.x
+    y = cmd_msg.y
+    z = cmd_msg.z
+    yaw = cmd_msg.yaw
+    v = cmd_msg.velocity
+
     url = ENDPOINT + "/" + SWARM_ID + "/" + drone_id + "/goto"
-    params = {"x": x, "y": y, "z": z, "y": yaw, "v": v}
+    params = {"x": x, "y": y, "z": z, "yaw": yaw, "v": v}
+
     r = requests.get(url=url, params=params)
     data = r.text
     print data
@@ -129,7 +163,20 @@ def shutdown():
     r = requests.get(url=url, params=params)
     data = r.text
     print data
-    
-if __name__ == '__main__':
-    getArena()
 
+if __name__ == '__main__':
+    rospy.init_node("server", anonymous=False)
+
+    registerSwarm(0,1234)
+    connect("drone_11","E7E7E7E711")
+    calibrate("drone_11")
+    status_pub_11 = rospy.Publisher('/drone_11/status', DroneStatus, queue_size=1)
+    goto_sub_11 = rospy.Subscriber('/drone_11/goto', DroneCommand, goto)
+    land_sub_11 = rospy.Subscriber('/drone_11/land', DroneLandTakeoff, land)
+    takeoff_sub_11 = rospy.Subscriber('/drone_11/takeoff', DroneLandTakeoff, takeoff)
+
+    while not rospy.is_shutdown():
+        if status(drone_id='drone_11'):
+            status_pub_11.publish(status_msg)
+
+    disconnect("drone_11")

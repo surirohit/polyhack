@@ -10,12 +10,12 @@ if __name__ == '__main__':
     land_pub = rospy.Publisher(drone_id+'/land', DroneLandTakeoff, queue_size=1)
     takeoff_pub = rospy.Publisher(drone_id+'/takeoff', DroneLandTakeoff, queue_size=1)
 
-    rate = rospy.Rate(10) # 10hz
+    rate = rospy.Rate(30) # 10hz
 
-    height = 1
-    takeoff_velocity = 0.2
-    land_velocity = 0.2
-    move_velocity = 0.2
+    height = 0.5
+    takeoff_velocity = 0.7
+    land_velocity = 0.7
+    move_velocity = 0.7
 
     cmd_msg = DroneCommand()
     cmd_msg.drone_id = drone_id
@@ -42,16 +42,16 @@ if __name__ == '__main__':
 
     ## Tell it to go to (0,0) and wait till it reaches
     print "Sending 0,0 command"
-    cmd_msg.x = 0
-    cmd_msg.y = 0
+    cmd_msg.x = 2
+    cmd_msg.y = 2
     cmd_msg.z = height
     cmd_pub.publish(cmd_msg)
     rospy.sleep(5)
 
     ## Tell it to go to (0,0) and wait till it reaches
     print "Sending 1,1 command"
-    cmd_msg.x = 0
-    cmd_msg.y = 0
+    cmd_msg.x = 1
+    cmd_msg.y = 2
     cmd_msg.z = height
     cmd_pub.publish(cmd_msg)
     rospy.sleep(5)
