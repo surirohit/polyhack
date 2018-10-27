@@ -134,7 +134,7 @@ def goto(cmd_msg):
 
 def package():
     print "Trying to get package"
-    global need_to_assign,package_msg,package_pub
+    global need_to_assign,package_msg,package_pub,drone
     for i in range(len(need_to_assign)):
         if need_to_assign[i]:
             url = ENDPOINT + "/" + SWARM_ID + "/package"
@@ -147,16 +147,26 @@ def package():
                 package_msg.x = data["coordinates"][0]
                 package_msg.y = data["coordinates"][1]
                 package_msg.weight = data["weight"]
+                package_msg.drone_id = drone[i]
                 package_pub[i].publish(package_msg)
+                print package_msg.id
             except ValueError:
                 return
             need_to_assign[i] = False
 
-def deliver(drone_id, package_id):
+def deliver(delivered_msg):
+    global need_to_assign
+    drone_id = delivered_msg.drone_id
+    package_id = delivered_msg.id
+    for i in range(N):
+        if drone_id == drone[i]:
+            need_to_assign[i] = True
+
     url = ENDPOINT + "/" + SWARM_ID + "/" + drone_id + "/deliver"
     params = {"package": package_id}
     r = requests.get(url=url, params=params)
     data = r.text
+    print "CHECK THIS!!!!!!!!!!!!!!!!!!!!!!!!!!"
     print data
 
 # Misc
@@ -194,6 +204,9 @@ package_pub = []
 goto_sub = []
 land_sub = []
 takeoff_sub = []
+
+## Dont need different Subscribers because drone_id is in package
+rospy.Subscriber('/delivered', DronePackage, deliver)
 
 for i in range(N):
     status_pub.append(rospy.Publisher('/'+drone[i]+'/status', DroneStatus, queue_size=1))
