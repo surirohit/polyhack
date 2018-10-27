@@ -40,21 +40,15 @@ if __name__ == '__main__':
     takeoff_pub.publish(takeoff_msg)
     rospy.sleep(5)
 
-    ## Tell it to go to (0,0) and wait till it reaches
-    print "Sending 0,0 command"
-    cmd_msg.x = 2
-    cmd_msg.y = 2
-    cmd_msg.z = height
-    cmd_pub.publish(cmd_msg)
-    rospy.sleep(5)
-
-    ## Tell it to go to (0,0) and wait till it reaches
-    print "Sending 1,1 command"
-    cmd_msg.x = 1
-    cmd_msg.y = 2
-    cmd_msg.z = height
-    cmd_pub.publish(cmd_msg)
-    rospy.sleep(5)
+    x = [2,3,2,1,1]
+    y = [2,3,4,3,2]
+    for x_i,y_i in zip(x,y):
+        print "Sending", x_i,y_i,"command"
+        cmd_msg.x = x_i
+        cmd_msg.y = y_i
+        cmd_msg.z = height
+        cmd_pub.publish(cmd_msg)
+        rospy.sleep(5)
 
     ## Tell it to land and exit
     print "Sending land command"
