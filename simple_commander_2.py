@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from elcash_drone.msg import DroneStatus, DroneLandTakeoff, DroneCommand
-import SimplePlanPlanning
+from SimplePlanPlanning import path_setting,path_planning_simple
 
 if __name__ == '__main__':
     drone_id = rospy.get_param('~drone_id', 'drone_11')
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     i=0
     if len(path_array)>1:
         for i in len(path_array):
-            while (sqrt((cx-path_array[i][0])**2+(cy-path_array[i][1])**2))<0.2:
+            while ((cx-path_array[i][0])**2+(cy-path_array[i][1])**2)**(1/2)<0.2:
                 cmd_msg.x = path_array[i][0]
                 cmd_msg.y = path_array[i][1]
                 cmd_msg.z = height
