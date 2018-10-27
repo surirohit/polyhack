@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from elcash_drone.msg import DroneStatus, DroneLandTakeoff, DroneCommand
-import SimplePlanPlanning.py
+import SimplePlanPlanning
 
 if __name__ == '__main__':
     drone_id = rospy.get_param('~drone_id', 'drone_11')
@@ -37,12 +37,12 @@ if __name__ == '__main__':
     rospy.sleep(5)
 
     ## Tell it to take off and wait
-    print "Sending takeoff command"
+    print("Sending takeoff command")
     takeoff_pub.publish(takeoff_msg)
     rospy.sleep(5)
 
     ## Tell it to go to (0,0) and wait till it reaches
-    print "Sending 0,0 command"
+    print("Sending 0,0 command")
     path = path_setting(cx,cy,dx,dy)
     path_array = path_planning_simple(path)
     i=0
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     
 
     ## Tell it to go to (0,0) and wait till it reaches
-    print "Sending 1,1 command"
+    print("Sending 1,1 command")
     cmd_msg.x = 0
     cmd_msg.y = 0
     cmd_msg.z = height
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     rospy.sleep(5)
 
     ## Tell it to land and exit
-    print "Sending land command"
+    print("Sending land command")
     land_pub.publish(land_msg)
 
     rospy.spin()
