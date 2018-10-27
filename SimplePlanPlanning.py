@@ -58,17 +58,17 @@ def path_planning_simple(path):
 
     #From zero to goal point
     if path == 2:
-        return [2.6,0.6]
+        return [[2.6,0.6]]
     if path == 3:
-        return [3.4,1.4]
+        return [[3.4,1.4]]
     if path == 4:
         return [[2.6,2.6],[2.4,3.4]]
     if path == 5:
-        return [0.6,2.2]
+        return [[0.6,2.2]]
     if path == 6:
-        return [1.4,3.2]
+        return [[1.4,3.2]]
     if path == 7:
-        return [1,1.6]
+        return [[1,1.6]]
     if path == 8:
         return [[3.4,1.4],[3.6,0.6]]
     if path == 9:
@@ -76,17 +76,17 @@ def path_planning_simple(path):
 
 #From goal point to zero
     if path == 20:
-        return [2.2,1.6]
+        return [[2.2,1.6]]
     if path == 30:
-        return [2.2,1.6]
+        return [[2.2,1.6]]
     if path == 40:
         return [[2.6,2.6],[2.2,1.6]]
     if path == 50:
-        return [2.2,1.6]
+        return [[2.2,1.6]]
     if path == 60:
-        return [1.4,3.2]
+        return [[1.4,3.2]]
     if path == 70:
-        return [2.2,1.6]
+        return [[2.2,1.6]]
     if path == 80:
         return [[3.4,1.4],[2.2,1.6]]
     if path == 90:
