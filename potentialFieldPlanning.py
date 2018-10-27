@@ -6,21 +6,21 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from math import sqrt
 
-q_goalx = 2.2 # m
-q_goaly = 1.6 # m
+q_goalx = 2.6 # m
+q_goaly = 2.6 # m
 
 obstacles_x = np.array([2.0, 1.5, 3.15, 3.0])
 obstacles_y = np.array([2.8, 1.0, 0.7, 2.0])
 
-drone_x = 0.0
-drone_y = 0.0
+drone_x = 0.5
+drone_y = 0.5
 
 def calc_potential_field(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_goaly):
     # Parameters
     K_att = 5.0  # attractive potential gain
     K_rep = 100.0  # repulsive potential gain
     d = 0.1 # m, tolerance to reach goal
-    rho_naut = 0.8 # m, distance of influence
+    rho_naut = 0.6 # m, distance of influence
 
     # Attractive potential
     q = np.array([drone_x, drone_y])
@@ -84,21 +84,24 @@ def calc_potential_field(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_
 
 def planPath(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_goaly):
     tol = 0.1 # m
-    iter_max = 1000
+    # iter_max = 1000
     iter = 0
     q = np.array([drone_x, drone_y])
     q_goal = np.array([q_goalx, q_goaly])
     dist = sqrt((q[0] - q_goal[0])**2 + (q[1] - q_goal[1])**2)
     x = np.array([drone_x])
     y = np.array([drone_y])
-    while (dist > tol and iter <= iter_max):
+    while (dist > tol): # and iter <= iter_max):
         q_next = calc_potential_field(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_goaly)
         dist = sqrt((q_next[0] - q_goal[0])**2 + (q_next[1] - q_goal[1])**2)
         iter = iter + 1
         drone_x = q_next[0]
         drone_y = q_next[1]
-        x = np.append(x,drone_x)
-        y = np.append(y,drone_y)
+        print(drone_x)
+        if (dist <= tol or (iter % 2)==0):
+            print(drone_x)
+            x = np.append(x,drone_x)
+            y = np.append(y,drone_y)
         # time.sleep(0.0625)
         # print(dist)
         # print(q_next)
@@ -107,5 +110,5 @@ def planPath(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_goaly):
 x, y = planPath(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_goaly)
 #print(x)
 #print(y)
-#plt.plot(x,y)
-#plt.show()
+plt.plot(x,y)
+plt.show()
