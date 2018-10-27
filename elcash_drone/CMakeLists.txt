@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   message_runtime
   rospy
+  std_msgs
 )
 
 ################################################
@@ -14,6 +15,14 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
  FILES
  DroneStatus.msg
+ DroneLandTakeoff.msg
+ DroneCommand.msg
+)
+
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
 )
 
 catkin_package()
