@@ -46,18 +46,12 @@ if __name__ == '__main__':
     path = path_setting(cx,cy,dx,dy)
     path_array = path_planning_simple(path)
     i=0
-    if len(path_array)>1:
-        for i in len(path_array):
-            while ((cx-path_array[i][0])**2+(cy-path_array[i][1])**2)**(1/2)<0.2:
-                cmd_msg.x = path_array[i][0]
-                cmd_msg.y = path_array[i][1]
-                cmd_msg.z = height
-                cmd_pub.publish(cmd_msg)
-    else:
-        cmd_msg.x = path_array[0][0]
-        cmd_msg.y = path_array[0][1]
-        cmd_msg.z = height
-        cmd_pub.publish(cmd_msg)
+    for i in len(path_array):
+        while ((cx-path_array[i][0])**2+(cy-path_array[i][1])**2)**(1/2)<0.2:
+            cmd_msg.x = path_array[i][0]
+            cmd_msg.y = path_array[i][1]
+            cmd_msg.z = height
+            cmd_pub.publish(cmd_msg)
     
     
 
