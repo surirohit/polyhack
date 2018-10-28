@@ -20,7 +20,7 @@ def calc_potential_field(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_
     K_att = 5.0  # attractive potential gain
     K_rep = 100.0  # repulsive potential gain
     d = 0.1 # m, tolerance to reach goal
-    rho_naut = 0.6 # m, distance of influence
+    rho_naut = 0.4 # m, distance of influence
 
     # Attractive potential
     q = np.array([drone_x, drone_y])
@@ -110,5 +110,20 @@ def planPath(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_goaly):
 x, y = planPath(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_goaly)
 #print(x)
 #print(y)
+
+xmin = 0
+ymin = xmin
+xmax = 4
+ymax = xmax
 plt.plot(x,y)
+plt.hold(True)
+plt.plot(obstacles_x, obstacles_y, 'o', color='red')
+axes = plt.gca()
+axes.set_xlim([xmin,xmax])
+axes.set_ylim([ymin,ymax])
+for a, b in zip(obstacles_x,obstacles_y):
+    # plot circles using the RGBA colors
+    circle = plt.Circle((a, b), radius=0.4, color='blue', fill=False)
+    axes.add_artist(circle)
+plt.hold(False)
 plt.show()
