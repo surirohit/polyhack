@@ -169,6 +169,18 @@ def deliver(delivered_msg):
     print "CHECK THIS!!!!!!!!!!!!!!!!!!!!!!!!!!"
     print data
 
+
+def pickup(pickup_msg):
+    drone_id = pickup_msg.drone_id
+    package_id = pickup_msg.id
+
+    url = ENDPOINT + "/" + SWARM_ID + "/" + drone_id + "/deliver"
+    params = {"package": package_id}
+    r = requests.get(url=url, params=params)
+    data = r.text
+    print "CHECK THIS!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    print data
+
 # Misc
 
 def resetGenerator(seed):
@@ -207,7 +219,7 @@ takeoff_sub = []
 
 ## Dont need different Subscribers because drone_id is in package
 rospy.Subscriber('/delivered', DronePackage, deliver)
-
+rospy.Subscriber('/pickup',DronePackage, pickup)
 for i in range(N):
     status_pub.append(rospy.Publisher('/'+drone[i]+'/status', DroneStatus, queue_size=1))
     package_pub.append(rospy.Publisher('/'+drone[i]+'/assign', DronePackage, queue_size=1))

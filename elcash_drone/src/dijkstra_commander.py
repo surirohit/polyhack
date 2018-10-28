@@ -133,6 +133,7 @@ rospy.init_node(drone_id+"_commander", anonymous=False)
 cmd_pub = rospy.Publisher(drone_id+'/goto', DroneCommand, queue_size=1)
 land_pub = rospy.Publisher(drone_id+'/land', DroneLandTakeoff, queue_size=1)
 takeoff_pub = rospy.Publisher(drone_id+'/takeoff', DroneLandTakeoff, queue_size=1)
+pickup_pub = rospy.Publisher('/pickup', DronePackage, queue_size=1)
 delivered_pub = rospy.Publisher('/delivered', DronePackage, queue_size=1)
 
 status_sub = rospy.Subscriber('/'+drone_id+'/status', DroneStatus, update_status)
@@ -168,7 +169,7 @@ while not rospy.is_shutdown():
             continue
 
         ### Assume you are at home
-
+        pickup_pub.publish(package_list[i])
         ### Plan and Take off
         print "Plan path to package location"
         print curr,(package_list[i].x,package_list[i].y)
