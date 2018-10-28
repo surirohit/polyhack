@@ -1,0 +1,11 @@
+string  id
+float64 var_x
+float64 var_y
+float64 var_z
+float64 x
+float64 y
+float64 z
+float64 yaw
+string  status
+float64 battery_voltage
+float64 battery_percentage
