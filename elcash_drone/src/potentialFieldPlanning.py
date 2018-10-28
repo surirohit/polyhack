@@ -29,8 +29,8 @@ def calc_potential_field(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_
     # Parameters
     K_att = 5.0  # attractive potential gain
     K_rep = 100.0  # repulsive potential gain
-    d = 0.1 # m, tolerance to reach goal
-    rho_naut = 0.4 # m, distance of influence
+    d = 0.25 # m, tolerance to reach goal
+    rho_naut = 0.3 # m, distance of influence
 
     # Attractive potential
     q = np.array([drone_x, drone_y])
@@ -66,7 +66,7 @@ def calc_potential_field(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_
             # If A is far from obstacle, don't want obstacle to affect A's motion
         # One Choice for U_rep
 
-    rho = 10**6
+    rho = 10**8
     for i in range(0,len(obstacles_x)):
         rho_test = sqrt((q[0] - obstacles_x[i])**2 + (q[1] - obstacles_y[i])**2)
         if rho_test < rho:
@@ -87,13 +87,13 @@ def calc_potential_field(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_
 
     # 1. Let q_0 = q_init, i = 0
 
-    delta = 0.1*sqrt((q[0] - q_goal[0])**2 + (q[1] - q_goal[1])**2)
+    delta = 0.2*sqrt((q[0] - q_goal[0])**2 + (q[1] - q_goal[1])**2)
     q_next = q + delta*F/(sqrt(F[0]**2 + F[1]**2))
 
     return q_next
 
 def planPath(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_goaly):
-    tol = 0.1 # m
+    tol = 0.25 # m
     # iter_max = 1000
     iter = 0
     q = np.array([drone_x, drone_y])

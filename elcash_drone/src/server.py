@@ -10,7 +10,8 @@ CHANNEL = 80
 RADIO = 0
 
 drone = ['drone_11', 'drone_12','drone_13']
-drone_id = ['E7E7E7E713', 'E7E7E7E711','E7E7E7E712']
+drone_id = ['E7E7E7E711', 'E7E7E7E712', 'E7E7E7E713']
+need_to_assign = [True, False, False]
 
 N = 1
 
@@ -207,7 +208,6 @@ def shutdown():
 status_msg = DroneStatus()
 package_msg = DronePackage()
 
-need_to_assign = [True, False, False]
 
 rospy.init_node("server", anonymous=False)
 

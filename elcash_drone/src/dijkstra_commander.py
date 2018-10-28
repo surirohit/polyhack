@@ -127,8 +127,8 @@ def goToPath(path):
         while distance(pt,curr) > THRESH:
             rospy.sleep(0.1)
 
+rospy.init_node("commander", anonymous=True)
 drone_id = rospy.get_param('~drone_id', 'drone_11')
-rospy.init_node(drone_id+"_commander", anonymous=False)
 
 cmd_pub = rospy.Publisher(drone_id+'/goto', DroneCommand, queue_size=1)
 land_pub = rospy.Publisher(drone_id+'/land', DroneLandTakeoff, queue_size=1)
@@ -142,7 +142,7 @@ package_sub = rospy.Subscriber('/'+drone_id+'/assign', DronePackage, assign_pack
 rate = rospy.Rate(30) # 10hz
 
 height = 0.6
-takeoff_velocity = 0.3
+takeoff_velocity = 3
 land_velocity = 0.7
 move_velocity = 0.35
 
