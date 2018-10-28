@@ -9,7 +9,7 @@ SWARM_ID = "elcash"
 CHANNEL = 80
 RADIO = 0
 
-drone = ['drone_13', 'drone_11','drone_12']
+drone = ['drone_11', 'drone_12','drone_13']
 drone_id = ['E7E7E7E713', 'E7E7E7E711','E7E7E7E712']
 
 N = 1
