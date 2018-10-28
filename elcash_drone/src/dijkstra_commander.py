@@ -9,7 +9,7 @@ LAND_TIME = 3
 NODES = {
     "0": (2.2, 1.6),
     "2": (2.5, 0.6),
-    "3": (3.4, 1.4),
+    "3": (3.3, 1.4),
     "4": (2.4, 3.4),
     "5": (0.6, 2.2),
     "6": (1.4, 3.2),
@@ -93,7 +93,7 @@ def plan(origin_pos, goal_pos):
 package_list = []
 package_status = []
 
-THRESH = 0.1
+THRESH = 0.15
 
 curr = (0,0)
 home = (2.2,1.6) #TODO
@@ -123,9 +123,8 @@ def goToPath(path):
         cmd_pub.publish(cmd_msg)
         if i == len(path)-1:
             cmd_msg.z = cmd_msg.z*2
-        print "Waiting"
-        while distance(pt,curr) > THRESH:
-            rospy.sleep(0.1)
+        print "Waiting 2 seconds"
+        rospy.sleep(2)
 
 rospy.init_node("commander", anonymous=True)
 drone_id = rospy.get_param('~drone_id', 'drone_11')
@@ -141,10 +140,10 @@ package_sub = rospy.Subscriber('/'+drone_id+'/assign', DronePackage, assign_pack
 
 rate = rospy.Rate(30) # 10hz
 
-height = 0.6
+height = 0.3
 takeoff_velocity = 3
 land_velocity = 0.7
-move_velocity = 0.35
+move_velocity = 1
 
 cmd_msg = DroneCommand()
 cmd_msg.drone_id = drone_id
