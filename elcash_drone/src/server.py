@@ -10,7 +10,7 @@ CHANNEL = 80
 RADIO = 0
 
 drone = ['drone_11','drone_12','drone_13']
-drone_id = ['E7E7E7E712','E7E7E7E711','E7E7E7E713']
+drone_id = ['E7E7E7E711','E7E7E7E712','E7E7E7E713']
 
 N = 1
 

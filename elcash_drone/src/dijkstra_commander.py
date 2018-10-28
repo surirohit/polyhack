@@ -93,7 +93,7 @@ def plan(origin_pos, goal_pos):
 package_list = []
 package_status = []
 
-THRESH = 0.07
+THRESH = 0.1
 
 curr = (0,0)
 home = (2.2,1.6) #TODO
@@ -176,10 +176,9 @@ while not rospy.is_shutdown():
         print "Sending takeoff command"
         path_1 = plan(curr,(package_list[i].x,package_list[i].y))
         takeoff_pub.publish(takeoff_msg)
-
         rospy.sleep(LAND_TIME)
 
-        ### Do magic
+        ### do magic
         goToPath(path_1)
         rospy.sleep(1)
 
@@ -192,14 +191,12 @@ while not rospy.is_shutdown():
         ### Plan and Take off
         print "Plan path to home location"
         print curr,home
+        path_2 = plan(curr,home)
 
         print "Sending takeoff command"
-        path_2 = plan(curr,home)
+
         takeoff_pub.publish(takeoff_msg)
-
-        rospy.sleep(LAND_TIME)
-
-        ### plan
+        rospy.sleep(LAND_TIME/2)
 
         ### do magic
         goToPath(path_2)
