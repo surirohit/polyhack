@@ -8,15 +8,10 @@ import potentialFieldPlanning
 LAND_TIME = 3
 
 
-def plan(origin_pos, goal_pos):
-    origin = best_match(origin_pos, NODES)
-    target = best_match(goal_pos, NODES)
-    return path(origin, target)
-
 package_list = []
 package_status = []
 
-THRESH = 0.1
+THRESH = 0.2
 
 curr = (0,0)
 home = (2.2,1.6) #TODO
@@ -103,14 +98,13 @@ while not rospy.is_shutdown():
         ### Plan and Take off
         print "Plan path to home location"
         print curr,home
-        path_2 = plan(curr,home)
 
         print "Sending takeoff command"
 
         takeoff_pub.publish(takeoff_msg)
         rospy.sleep(LAND_TIME/2)
 
-        while dist(curr, target) > THRESH:
+        while dist(curr, home) > THRESH:
             obstacles = [(2, 2.8), (1.5, 1), (3.15, 0.7), (3, 2)]
             (x, y) = potentialFieldPlanning.next_pos(curr, target, obstacles)
             cmd_msg.x = x
