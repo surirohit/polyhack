@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import rospy
 from elcash_drone.msg import DroneStatus, DroneLandTakeoff, DroneCommand
-from SimplePlanPlanning import path_setting,path_planning_simple
 
 if __name__ == '__main__':
     drone_id = rospy.get_param('~drone_id', 'drone_11')
@@ -11,12 +10,12 @@ if __name__ == '__main__':
     land_pub = rospy.Publisher(drone_id+'/land', DroneLandTakeoff, queue_size=1)
     takeoff_pub = rospy.Publisher(drone_id+'/takeoff', DroneLandTakeoff, queue_size=1)
 
-    rate = rospy.Rate(10) # 10hz
+    rate = rospy.Rate(30) # 10hz
 
-    height = 1
-    takeoff_velocity = 0.2
-    land_velocity = 0.2
-    move_velocity = 0.2
+    height = 0.5
+    takeoff_velocity = 0.7
+    land_velocity = 0.7
+    move_velocity = 0.7
 
     cmd_msg = DroneCommand()
     cmd_msg.drone_id = drone_id
@@ -37,34 +36,22 @@ if __name__ == '__main__':
     rospy.sleep(5)
 
     ## Tell it to take off and wait
-    print("Sending takeoff command")
+    print "Sending takeoff command"
     takeoff_pub.publish(takeoff_msg)
     rospy.sleep(5)
 
-    ## Tell it to go to (0,0) and wait till it reaches
-    print("Sending 0,0 command")
-    path = path_setting(cx,cy,dx,dy)
-    path_array = path_planning_simple(path)
-    i=0
-    for i in len(path_array):
-        while ((cx-path_array[i][0])**2+(cy-path_array[i][1])**2)**(1/2)<0.2:
-            cmd_msg.x = path_array[i][0]
-            cmd_msg.y = path_array[i][1]
-            cmd_msg.z = height
-            cmd_pub.publish(cmd_msg)
-    
-    
-
-    ## Tell it to go to (0,0) and wait till it reaches
-    print("Sending 1,1 command")
-    cmd_msg.x = 0
-    cmd_msg.y = 0
-    cmd_msg.z = height
-    cmd_pub.publish(cmd_msg)
-    rospy.sleep(5)
+    x = [2,3,2,1,1]
+    y = [2,3,4,3,2]
+    for x_i,y_i in zip(x,y):
+        print "Sending", x_i,y_i,"command"
+        cmd_msg.x = x_i
+        cmd_msg.y = y_i
+        cmd_msg.z = height
+        cmd_pub.publish(cmd_msg)
+        rospy.sleep(5)
 
     ## Tell it to land and exit
-    print("Sending land command")
+    print "Sending land command"
     land_pub.publish(land_msg)
 
     rospy.spin()
