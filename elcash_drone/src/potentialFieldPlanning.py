@@ -30,7 +30,7 @@ def calc_potential_field(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_
     K_att = 5.0  # attractive potential gain
     K_rep = 100.0  # repulsive potential gain
     d = 0.25 # m, tolerance to reach goal
-    rho_naut = 0.3 # m, distance of influence
+    rho_naut = 0.5 # m, distance of influence
 
     # Attractive potential
     q = np.array([drone_x, drone_y])
@@ -87,7 +87,7 @@ def calc_potential_field(obstacles_x, obstacles_y, drone_x, drone_y, q_goalx, q_
 
     # 1. Let q_0 = q_init, i = 0
 
-    delta = 0.2*sqrt((q[0] - q_goal[0])**2 + (q[1] - q_goal[1])**2)
+    delta = 0.9*sqrt((q[0] - q_goal[0])**2 + (q[1] - q_goal[1])**2)
     q_next = q + delta*F/(sqrt(F[0]**2 + F[1]**2))
 
     return q_next

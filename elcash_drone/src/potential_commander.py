@@ -61,7 +61,7 @@ package_sub = rospy.Subscriber('/'+drone_id+'/assign', DronePackage, assign_pack
 rate = rospy.Rate(30) # 10hz
 
 height = 0.4
-takeoff_velocity = 3
+takeoff_velocity = 0.1
 land_velocity = 0.7
 move_velocity = 1
 
